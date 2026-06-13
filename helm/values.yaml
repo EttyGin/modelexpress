@@ -17,15 +17,16 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+# ServiceAccount configuration: create SA, enable automount so token is available
 serviceAccount:
   create: true
   annotations: {}
   name: ""
-  automount: false
+  automount: true
   rbac:
     # Enable Role + RoleBinding for the Kubernetes metadata backend.
     # Required when MX_METADATA_BACKEND=kubernetes.
-    enabled: false
+    enabled: true
 
 podAnnotations: {}
 
@@ -82,16 +83,12 @@ env:
   MODEL_EXPRESS_CACHE_DIRECTORY: "/root"
   # Distributed backend selection. Required — the server fails to start without it.
   # Set MX_METADATA_BACKEND to "redis" or "kubernetes"; it drives both the P2P metadata
-  # store and the model registry.
-  #
-  # When "redis": also set REDIS_URL to your cluster's Redis service (e.g.
-  # "redis://redis.default.svc:6379"). The chart does not bundle a Redis sub-chart.
-  # When "kubernetes": apply examples/crds.yaml as a cluster-admin and set
-  # serviceAccount.rbac.enabled=true to grant the server access to the CRDs.
-  #
-  # MX_METADATA_BACKEND: "redis"
-  # REDIS_URL: "redis://redis.default.svc:6379"
-
+  # store and the model registry. For this cluster we default to the Kubernetes backend
+  # and constrain it to the release namespace via MX_METADATA_NAMESPACE.
+  MX_METADATA_BACKEND: "kubernetes"
+serviceAccount:
+  rbac:
+    enabled: true
 livenessProbe:
   enabled: true
   tcpSocket:

@@ -88,15 +88,7 @@ tolerations:
   - key: "dedicated"
     operator: "Equal"
     value: "model-serving"
-    effect: "NoSchedule"
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
+    effect: "NoSchedule"~    matchExpressions:
               - key: app.kubernetes.io/name
                 operator: In
                 values:
